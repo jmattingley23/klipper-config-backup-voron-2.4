@@ -1,0 +1,64 @@
+[server]
+host = 0.0.0.0
+port = 7125
+
+[data_store]
+temperature_store_size = 600
+gcode_store_size = 1000
+
+[authorization]
+force_logins = True
+cors_domains = 
+	*.local
+	*.lan
+	*://app.fluidd.xyz
+trusted_clients = 
+	10.0.0.0/8
+	127.0.0.0/8
+	192.168.0.0/16
+	FE80::/10
+	::1/128
+
+[octoprint_compat]
+
+[file_manager]
+enable_object_processing = False
+
+[history]
+
+[timelapse]
+
+[update_manager]
+enable_auto_refresh = True
+
+[update_manager client fluidd]
+type = web
+repo = cadriel/fluidd
+path = ~/fluidd
+
+[update_manager led_effect]
+type = git_repo
+path = ~/klipper-led_effect
+origin = https://github.com/julianschill/klipper-led_effect.git
+is_system_service = False
+
+[update_manager timelapse]
+type = git_repo
+primary_branch = main
+path = ~/moonraker-timelapse
+origin = https://github.com/mainsail-crew/moonraker-timelapse.git
+
+[update_manager client z_calibration]
+type = git_repo
+path = ~/klipper_z_calibration
+origin = https://github.com/protoloft/klipper_z_calibration.git
+install_script = install.sh
+managed_services = klipper
+
+[update_manager client frame_expansion]
+type = git_repo
+path = /home/pi/klipper_frame_expansion_comp
+primary_branch = main
+origin = https://github.com/alchemyEngine/klipper_frame_expansion_comp.git
+install_script = install.sh
+
