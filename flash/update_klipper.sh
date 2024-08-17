@@ -247,23 +247,29 @@ function main(){
           echo  "Use this script with --firmware option to update MCUs anyway"
       else
         if [[ "$k_local_version" == *"dirty"* ]]; then
-          echo "Your repo is dirty, try to solve this before update"
+          echo "Your repo is dirty!  I can fix mcu.py, verify no other important local changes"
           echo "Conflict to solve : "
           git -C ~/klipper status --short
-        else
+	  echo "Press any key to continue with the update, or CTRL+C to cancel."
+	  read -rn 1 -s
+	  ./mcu_timing.sh remove
+	fi
           
-          echo "$k_local_version -> $k_remote_version"
-          echo "$(git -C ~/klipper shortlog HEAD..origin/master| grep -E '^[ ]+\w+' | wc -l) commit(s)  behind repo"
-          if ! $CHECK ; then
-            echo  "Updating Klipper from $k_repo $k_fullbranch" 
-            # Store previous version
-            echo "$k_local_version" > $script_path/config/.previous_version           
-            git_output=$(git -C ~/klipper pull --ff-only) # Capture stdout
-            TOUPDATE=true
-          else
-            echo  "Klipper can be updated from $k_repo $k_fullbranch"
-            TOUPDATE=false
-          fi
+        echo "$k_local_version -> $k_remote_version"
+        echo "$(git -C ~/klipper shortlog HEAD..origin/master| grep -E '^[ ]+\w+' | wc -l) commit(s)  behind repo"
+        
+	if ! $CHECK ; then
+          echo  "Updating Klipper from $k_repo $k_fullbranch" 
+          # Store previous version
+          echo "$k_local_version" > $script_path/config/.previous_version           
+          git_output=$(git -C ~/klipper pull --ff-only) # Capture stdout
+          
+	  echo "Klipper updated done, patching mcu.py"
+	  ./mcu_timing.sh install
+	  TOUPDATE=true
+        else
+          echo  "Klipper can be updated from $k_repo $k_fullbranch"
+          TOUPDATE=false
         fi
       fi
       fi
